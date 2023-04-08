@@ -4,7 +4,7 @@ import re
 import xml.etree.ElementTree as ET
 from error import ErrorNum
 from arg_parse import ArgumentParser
-
+from xmlvalidator import XMLValidator
 
 
 if __name__ == '__main__':
@@ -21,4 +21,8 @@ if __name__ == '__main__':
     if (source is None and input is None):
         sys.stderr.write("Error: Expected source or input file\n")
         sys.exit(ErrorNum.WRONG_PARAM)
-    
+    xml_in = XMLValidator(source)
+    print(list(xml_in.tree.getroot()))
+    for element in xml_in.tree.iter():
+        print(element)
+    xml_in.validate()
