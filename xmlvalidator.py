@@ -51,9 +51,6 @@ class XMLValidator:
         if child.get('order') is None:
             sys.stderr.write("Error: Wrong XML structure\n")
             sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
-        if child.get('opcode') not in ['MOVE', 'CREATEFRAME', 'PUSHFRAME', 'POPFRAME', 'DEFVAR', 'CALL', 'RETURN', 'PUSHS', 'POPS', 'ADD', 'SUB', 'MUL', 'IDIV', 'LT', 'GT', 'EQ', 'AND', 'OR', 'NOT', 'INT2CHAR', 'STRI2INT', 'READ', 'WRITE', 'CONCAT', 'STRLEN', 'GETCHAR', 'SETCHAR', 'TYPE', 'LABEL', 'JUMP', 'JUMPIFEQ', 'JUMPIFNEQ', 'EXIT', 'DPRINT', 'BREAK']:
-            sys.stderr.write("Error: Wrong XML structure\n")
-            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         if len(child) > 3:
             sys.stderr.write("Error: Wrong XML structure\n")
             sys.exit(ErrorNum.WRONG_XML_STRUCTURE)

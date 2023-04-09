@@ -2,8 +2,8 @@ from enum import IntEnum
 
 class ErrorNum(IntEnum):
     WRONG_PARAM = 10
-    SOURCE_FILE_ERR = 11
-    INPUT_FILE_ERR = 12
+    INPUT_FILE_ERR = 11
+    OUTPUT_FILE_ERR = 12
     WRONG_XML_FORMAT = 31
     WRONG_XML_STRUCTURE = 32
     SEMANTIC_ERROR = 52

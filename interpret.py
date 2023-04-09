@@ -5,6 +5,8 @@ import xml.etree.ElementTree as ET
 from error import ErrorNum
 from arg_parse import ArgumentParser
 from xmlvalidator import XMLValidator
+from factory import Factory
+from stack import Stack
 
 
 if __name__ == '__main__':
@@ -26,3 +28,17 @@ if __name__ == '__main__':
     for element in xml_in.tree.iter():
         print(element)
     xml_in.validate()
+    labels = {}
+    for child in xml_in.root:
+        if child.get('opcode') == 'LABEL':
+            labels[child[0].text] = child.get('order')
+    
+    factory = Factory()
+    for child in xml_in.root:
+        instruction=factory.get_instruction(child.get('opcode'))
+        for arg in child:
+            instruction.set_arg(arg)
+    for i in instruction.instruction_list:
+        print(i)
+        for a in i.arguments:
+            print(a.value, a.type)
