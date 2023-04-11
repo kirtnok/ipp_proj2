@@ -13,7 +13,7 @@ class XMLValidator:
                 self.tree = ET.parse(source)
         except FileNotFoundError:
             sys.stderr.write("Error: File not found\n")
-            sys.exit(ErrorNum.SOURCE_FILE_ERR)
+            sys.exit(ErrorNum.INPUT_FILE_ERR)
         except ET.ParseError:
             sys.stderr.write("Error: XML parse error\n")
             sys.exit(ErrorNum.WRONG_XML_FORMAT)

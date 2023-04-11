@@ -1,13 +1,10 @@
-import argparse
 import sys
-import re
 import xml.etree.ElementTree as ET
 from error import ErrorNum
 from arg_parse import ArgumentParser
 from xmlvalidator import XMLValidator
 from factory import Factory
-from stack import Stack
-
+from interpret_class import Interpret
 
 if __name__ == '__main__':
     arg = ArgumentParser()
@@ -24,21 +21,17 @@ if __name__ == '__main__':
         sys.stderr.write("Error: Expected source or input file\n")
         sys.exit(ErrorNum.WRONG_PARAM)
     xml_in = XMLValidator(source)
-    print(list(xml_in.tree.getroot()))
-    for element in xml_in.tree.iter():
-        print(element)
     xml_in.validate()
-    labels = {}
+    interpret=Interpret()
     for child in xml_in.root:
         if child.get('opcode') == 'LABEL':
-            labels[child[0].text] = child.get('order')
+            interpret.labels[child[0].text] = child.get('order')
     
     factory = Factory()
     for child in xml_in.root:
-        instruction=factory.get_instruction(child.get('opcode'))
+        instruction=factory.get_instruction(child.get('opcode'),interpret)
         for arg in child:
             instruction.set_arg(arg)
-    for i in instruction.instruction_list:
-        print(i)
-        for a in i.arguments:
-            print(a.value, a.type)
+    interpret.run(instruction)
+    print(interpret.tmp_frame.vars)
+    print(interpret.global_frame.vars)

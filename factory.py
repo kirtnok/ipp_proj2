@@ -4,78 +4,78 @@ from error import ErrorNum
 
 class Factory:
     @classmethod
-    def get_instruction(cls,string: str, ):
+    def get_instruction(cls,string: str, interpret):
         match string.upper():
             case 'MOVE':
-                return Move()
+                return Move(interpret)
             case 'CREATEFRAME':
-                return CreateFrame()
+                return CreateFrame(interpret)
             case 'PUSHFRAME':
-                return PushFrame()
+                return PushFrame(interpret)
             case 'POPFRAME':
-                return PopFrame()
+                return PopFrame(interpret)
             case 'DEFVAR':
-                return DefVar()
+                return DefVar(interpret)
             case 'CALL':
-                return Call()
+                return Call(interpret)
             case 'RETURN':
-                return Return()
+                return Return(interpret)
             case 'PUSHS':
-                return PushS()
+                return PushS(interpret)
             case 'POPS':
-                return PopS()
+                return PopS(interpret)
             case 'ADD':
-                return Add()
+                return Add(interpret)
             case 'SUB':
-                return Sub()
+                return Sub(interpret)
             case 'MUL':
-                return Mul()
+                return Mul(interpret)
             case 'IDIV':
-                return IDiv()
+                return IDiv(interpret)
             case 'LT':
-                return Lt()
+                return Lt(interpret)
             case 'GT':
-                return Gt()
+                return Gt(interpret)
             case 'EQ':
-                return Eq()
+                return Eq(interpret)
             case 'AND':
-                return And()
+                return And(interpret)
             case 'OR':
-                return Or()
+                return Or(interpret)
             case 'NOT':
-                return Not()
+                return Not(interpret)
             case 'INT2CHAR':
-                return Int2Char()
+                return Int2Char(interpret)
             case 'STRI2INT':
-                return Stri2Int()
+                return Stri2Int(interpret)
             case 'READ':
-                return Read()
+                return Read(interpret)
             case 'WRITE':
-                return Write()
+                return Write(interpret)
             case 'CONCAT':
-                return Concat()
+                return Concat(interpret)
             case 'STRLEN':
-                return Strlen()
+                return Strlen(interpret)
             case 'GETCHAR':
-                return GetChar()
+                return GetChar(interpret)
             case 'SETCHAR':
-                return SetChar()
+                return SetChar(interpret)
             case 'TYPE':
-                return Type()
+                return Type(interpret)
             case 'LABEL':
-                return Label()
+                return Label(interpret)
             case 'JUMP':
-                return Jump()
+                return Jump(interpret)
             case 'JUMPIFEQ':
-                return JumpIfEq()
+                return JumpIfEq(interpret)
             case 'JUMPIFNEQ':
-                return JumpIfNeq()
+                return JumpIfNeq(interpret)
             case 'EXIT':
-                return Exit()
+                return Exit(interpret)
             case 'DPRINT':
-                return DPrint()
+                return DPrint(interpret)
             case 'BREAK':
-                return Break()
+                return Break(interpret)
             case _:
                 sys.stderr.write("Error: Unknown instruction\n")
                 sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
