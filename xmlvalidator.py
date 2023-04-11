@@ -7,10 +7,10 @@ from error import ErrorNum
 class XMLValidator:
     def __init__(self, source):
         try:
-            if source is None:
-                self.tree = ET.parse(sys.stdin)
+            if source == None:
+                self.root = ET.fromstring(sys.stdin.read())
             else:
-                self.tree = ET.parse(source)
+                self.root = ET.parse(source).getroot()
         except FileNotFoundError:
             sys.stderr.write("Error: File not found\n")
             sys.exit(ErrorNum.INPUT_FILE_ERR)
@@ -18,10 +18,8 @@ class XMLValidator:
             sys.stderr.write("Error: XML parse error\n")
             sys.exit(ErrorNum.WRONG_XML_FORMAT)
 
-        self.tree = ET.parse(source)
-        self.root = self.tree.getroot()
         try:
-            self.root[:] = sorted(self.root, key=lambda child: int(child.get('order')) if int(child.get('order')) >= 0 else 0/0)
+            self.root[:] = sorted(self.root, key=lambda child: int(child.get('order')) if int(child.get('order')) > 0 else 0/0)
             for child in self.root:
                 child[:] = sorted(child, key=lambda arg: arg.tag)
         except (TypeError, ValueError, ZeroDivisionError):
@@ -78,12 +76,9 @@ class XMLValidator:
                     sys.stderr.write("Error: Wrong XML structure\n")
                     sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
             case 'string':
-                try:
-                    if not re.match(r'^[^\s#\\\\]*$', child.text):
-                        sys.stderr.write("Error: Wrong XML structure\n")
-                        sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
-                except TypeError:
-                    pass
+                if child.text is None:
+                    child.text = ''
+                pass
             case 'nil':
                 if child.attrib.get('type') == 'nil':
                     if not re.match(r'^nil$', child.text) or child.text is None:
