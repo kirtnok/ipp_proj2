@@ -34,7 +34,7 @@ class Instruction:
             if self.interpret.tmp_frame is None:
                 sys.stderr.write("Error: Frame does not exist\n")
                 sys.exit(ErrorNum.MISSING_FRAME)
-            if name not in self.interpret.local_frames.top().vars:
+            if name not in self.interpret.tmp_frame.vars:
                 sys.stderr.write("Error: Variable not defined\n")
                 sys.exit(ErrorNum.UNDEFINED_VARIABLE)
         else:
@@ -86,6 +86,16 @@ class Move(Instruction):
         super().__init__("MOVE", interpret)
 
     def execute(self):
+        if self.arguments[0].type != "var":
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if self.arguments[1].type in ["type", "label"]:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if len(self.arguments) != 2:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+
         frame, name = self.arguments[0].value.split('@', 1)
         self.check_var(frame, name)
         value = 0
@@ -103,6 +113,9 @@ class CreateFrame(Instruction):
         super().__init__("CREATEFRAME", interpret)
 
     def execute(self):
+        if len(self.arguments) != 0:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         self.interpret.tmp_frame = Frame()
 
 
@@ -111,6 +124,10 @@ class PushFrame(Instruction):
         super().__init__("PUSHFRAME", interpret)
 
     def execute(self):
+        if len(self.arguments) != 0:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        
         if self.interpret.tmp_frame is None:
             sys.stderr.write("Error: Temp frame does not exist\n")
             sys.exit(ErrorNum.MISSING_FRAME)
@@ -123,6 +140,10 @@ class PopFrame(Instruction):
         super().__init__("POPFRAME", interpret)
 
     def execute(self):
+        if len(self.arguments) != 0:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        
         if self.interpret.local_frames.is_empty():
             sys.stderr.write("Error: Temp frame does not exist\n")
             sys.exit(ErrorNum.MISSING_FRAME)
@@ -134,6 +155,12 @@ class DefVar(Instruction):
         super().__init__("DEFVAR", interpret)
 
     def execute(self):
+        if self.arguments[0].type != "var": 
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if len(self.arguments) != 1:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         frame, name = self.arguments[0].value.split('@', 1)
         if frame == "GF":
             if name in self.interpret.global_frame.vars:
@@ -147,7 +174,6 @@ class DefVar(Instruction):
             if name in self.interpret.local_frames.top().vars:
                 sys.stderr.write("Error: Variable already defined\n")
                 sys.exit(ErrorNum.SEMANTIC_ERROR)
-            return True
         elif frame == "TF":
             if self.interpret.tmp_frame is None:
                 sys.stderr.write("Error: Frame does not exist\n")
@@ -182,6 +208,12 @@ class PushS(Instruction):
         super().__init__("PUSHS", interpret)
 
     def execute(self):
+        if len(self.arguments) != 1:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if self.arguments[0].type in ["type", "label"]:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         if self.arguments[0].type == "var":
             frame, name = self.arguments[0].value.split('@', 1)
             self.check_var(frame, name)
@@ -195,6 +227,12 @@ class PopS(Instruction):
         super().__init__("POPS", interpret)
 
     def execute(self):
+        if len(self.arguments) != 1:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if self.arguments[0].type != "var":
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         if self.interpret.data_stack.is_empty():
             sys.stderr.write("Error: EMPTY STACK\n")
             sys.exit(ErrorNum.MISSING_VALUE)
@@ -208,6 +246,12 @@ class Add(Instruction):
         super().__init__("ADD", interpret)
 
     def execute(self):
+        if self.arguments[0].type != "var": 
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if len(self.arguments) != 3:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         frame, name = self.arguments[0].value.split('@', 1)
         self.check_var(frame, name)
         numbers = [None, None]
@@ -224,6 +268,9 @@ class Add(Instruction):
                     sys.exit(ErrorNum.MISSING_VALUE)
             elif var.type == "int":
                 numbers[i] = var.value
+            else:
+                sys.stderr.write("Error: Wrong XML structure\n")
+                sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         self.set_var(frame, name, numbers[0] + numbers[1])
 
 
@@ -232,6 +279,12 @@ class Sub(Instruction):
         super().__init__("SUB", interpret)
 
     def execute(self):
+        if self.arguments[0].type != "var": 
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if len(self.arguments) != 3:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         frame, name = self.arguments[0].value.split('@', 1)
         self.check_var(frame, name)
         numbers = [None, None]
@@ -248,6 +301,9 @@ class Sub(Instruction):
                     sys.exit(ErrorNum.MISSING_VALUE)
             elif var.type == "int":
                 numbers[i] = var.value
+            else:
+                sys.stderr.write("Error: Wrong XML structure\n")
+                sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         self.set_var(frame, name, numbers[0] - numbers[1])
 
 
@@ -256,6 +312,12 @@ class Mul(Instruction):
         super().__init__("MUL", interpret)
 
     def execute(self):
+        if self.arguments[0].type != "var": 
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if len(self.arguments) != 3:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         frame, name = self.arguments[0].value.split('@', 1)
         self.check_var(frame, name)
         numbers = [None, None]
@@ -272,6 +334,9 @@ class Mul(Instruction):
                     sys.exit(ErrorNum.MISSING_VALUE)
             elif var.type == "int":
                 numbers[i] = var.value
+            else:
+                sys.stderr.write("Error: Wrong XML structure\n")
+                sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         self.set_var(frame, name, numbers[0] * numbers[1])
 
 
@@ -280,6 +345,12 @@ class IDiv(Instruction):
         super().__init__("IDIV", interpret)
 
     def execute(self):
+        if self.arguments[0].type != "var": 
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if len(self.arguments) != 3:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         frame, name = self.arguments[0].value.split('@', 1)
         self.check_var(frame, name)
         numbers = [None, None]
@@ -296,6 +367,9 @@ class IDiv(Instruction):
                     sys.exit(ErrorNum.MISSING_VALUE)
             elif var.type == "int":
                 numbers[i] = var.value
+            else:
+                sys.stderr.write("Error: Wrong XML structure\n")
+                sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         try:
             self.set_var(frame, name, int(numbers[0] / numbers[1]))
         except ZeroDivisionError:
@@ -428,7 +502,13 @@ class Label(Instruction):
         super().__init__("LABEL", interpret)
 
     def execute(self):
-        pass
+        if self.arguments[0].type != "label":
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        if len(self.arguments) != 1:
+            sys.stderr.write("Error: Wrong XML structure\n")
+            sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+        
 
 
 class Jump(Instruction):

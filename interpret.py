@@ -23,9 +23,9 @@ if __name__ == '__main__':
     xml_in = XMLValidator(source)
     xml_in.validate()
     interpret=Interpret()
-    for child in xml_in.root:
+    for i,child in enumerate(xml_in.root):
         if child.get('opcode') == 'LABEL':
-            interpret.labels[child[0].text] = child.get('order')
+            interpret.labels[child[0].text] = i
     
     factory = Factory()
     for child in xml_in.root:
@@ -33,5 +33,7 @@ if __name__ == '__main__':
         for arg in child:
             instruction.set_arg(arg)
     interpret.run(instruction)
-    print(interpret.tmp_frame.vars)
-    print(interpret.global_frame.vars)
+    #debug
+    print("TF",interpret.tmp_frame.vars)
+    print("GF",interpret.global_frame.vars)
+    print("LABELS",interpret.labels)
