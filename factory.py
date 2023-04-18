@@ -1,6 +1,11 @@
+# factory.py
+# author: Jakub Kontrik xkontr02
+# Description: factory desing pattern module
 import sys
 from instructions import *
 from error import ErrorNum
+
+# factory class that creates instruction objects
 
 
 class Factory:

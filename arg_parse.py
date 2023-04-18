@@ -1,7 +1,11 @@
-
+# arg_parse.py
+# author: Jakub Kontrik xkontr02
+# Description: module for parsing command line arguments
 import argparse
 import sys
 from error import ErrorNum
+
+# class for parsing command line arguments
 
 
 class ArgumentParser:
@@ -23,6 +27,8 @@ class ArgumentParser:
 
     def get_help(self):
         return self.args.help
+
+# rewrite of argparse.ArgumentParser.exit() method
 
 
 class MyParse(argparse.ArgumentParser):

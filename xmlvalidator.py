@@ -1,12 +1,18 @@
+# xmlvalidator.py
+# author: Jakub Kontrik xkontr02
+# Description: module for validating given xml file
 import xml.etree.ElementTree as ET
 import sys
 import re
 from error import ErrorNum
 
+# class for validating xml file
+
 
 class XMLValidator:
     def __init__(self, source):
         try:
+            # if source is None read from stdin
             if source == None:
                 self.root = ET.fromstring(sys.stdin.read())
             else:
@@ -17,9 +23,10 @@ class XMLValidator:
         except ET.ParseError:
             sys.stderr.write("Error: XML parse error\n")
             sys.exit(ErrorNum.WRONG_XML_FORMAT)
-
+        # reading xml and sorting it
         try:
             self.root[:] = sorted(self.root, key=lambda child: int(
+                # if negative number is in order attribute forcing zero division exeption
                 child.get('order')) if int(child.get('order')) > 0 else 0/0)
             for child in self.root:
                 child[:] = sorted(child, key=lambda arg: arg.tag)
@@ -38,6 +45,7 @@ class XMLValidator:
             else:
                 sys.stderr.write("Error: Wrong XML structure\n")
                 sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
+    # checking instruction attributes
 
     def validate_instruction(self, child, opcode_num):
         if child.get('order') in opcode_num:
@@ -66,7 +74,7 @@ class XMLValidator:
             if child[0].tag != 'arg1' or child[1].tag != 'arg2' or child[2].tag != 'arg3':
                 sys.stderr.write("Error: Wrong XML structure\n")
                 sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
-    # TODO UPRAVIT REGEXY
+    # ccekcing arguments attributes
 
     def validate_arg(self, child):
         match child.attrib.get('type'):

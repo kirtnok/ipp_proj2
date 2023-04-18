@@ -1,7 +1,12 @@
+# interpret_class.py
+# author: Jakub Kontrik xkontr02
+# Description: interpretation module
 import sys
 from stack import Stack
 from frame import Frame
 from error import ErrorNum
+
+# class for interpretation
 
 
 class Interpret:
@@ -26,6 +31,7 @@ class Interpret:
             self.input_data = None
 
     def run(self, inst):
+        # executinng every instruction
         while self.inst_index != len(inst.instruction_list):
             inst.instruction_list[self.inst_index].execute()
             self.inst_index += 1

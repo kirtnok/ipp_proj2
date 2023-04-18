@@ -1,4 +1,10 @@
+# frame.py
+# author: Jakub Kontrik xkontr02
+# Description: module for frame class
+
+# class for frames
 class Frame:
+    # using dictionary for storing variables
     def __init__(self):
         self.vars = {}
 

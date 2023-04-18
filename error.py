@@ -1,3 +1,6 @@
+# error.py
+# author: Jakub Kontrik xkontr02
+# Description: module with error numbers class
 from enum import IntEnum
 
 

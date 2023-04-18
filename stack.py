@@ -1,3 +1,6 @@
+# stack.py
+# author: Jakub Kontrik xkontr02
+# Description: implementation of own stack
 class Stack:
     def __init__(self):
         self.items = []
