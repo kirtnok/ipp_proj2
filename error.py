@@ -1,5 +1,6 @@
 from enum import IntEnum
 
+
 class ErrorNum(IntEnum):
     WRONG_PARAM = 10
     INPUT_FILE_ERR = 11

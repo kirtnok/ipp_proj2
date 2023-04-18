@@ -74,10 +74,15 @@ class Argument:
             if value == "false":
                 self.value = False
         elif type == "int":
-            self.value = int(value)
+            try:
+                self.value = int(value, 0)
+            except ValueError:
+                sys.stderr.write("Error: Wrong XML structure\n")
+                sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
         elif type == "string":
             self.value = str(value)
-            self.value = re.sub(r'\\(\d{3})', lambda x: chr(int(x.group(1))), self.value)
+            self.value = re.sub(r'\\(\d{3})', lambda x: chr(
+                int(x.group(1))), self.value)
         elif type == "var":
             self.value = value
         elif type == "nil" and value == "nil":
@@ -144,10 +149,9 @@ class PushFrame(Instruction):
         if self.interpret.tmp_frame is None:
             sys.stderr.write("Error: Temp frame does not exist\n")
             sys.exit(ErrorNum.MISSING_FRAME)
-        
+
         self.interpret.local_frames.push(self.interpret.tmp_frame)
         self.interpret.tmp_frame = None
-
 
 
 class PopFrame(Instruction):
@@ -434,6 +438,9 @@ class Lt(Instruction):
                 if numbers[i] is None:
                     sys.stderr.write("Error: Variable not set\n")
                     sys.exit(ErrorNum.MISSING_VALUE)
+                if type(numbers[i]) != int and type(numbers[i]) != bool and type(numbers[i]) != str:
+                    sys.stderr.write("Error: Wrong type\n")
+                    sys.exit(ErrorNum.TYPE_ERROR)
             elif var.type == "int" or var.type == "bool" or var.type == "string":
                 numbers[i] = var.value
             else:
@@ -467,6 +474,9 @@ class Gt(Instruction):
                 if numbers[i] is None:
                     sys.stderr.write("Error: Variable not set\n")
                     sys.exit(ErrorNum.MISSING_VALUE)
+                if type(numbers[i]) != int and type(numbers[i]) != bool and type(numbers[i]) != str:
+                    sys.stderr.write("Error: Wrong type\n")
+                    sys.exit(ErrorNum.TYPE_ERROR)
             elif var.type == "int" or var.type == "bool" or var.type == "string":
                 numbers[i] = var.value
             else:
@@ -500,6 +510,9 @@ class Eq(Instruction):
                 if numbers[i] is None:
                     sys.stderr.write("Error: Variable not set\n")
                     sys.exit(ErrorNum.MISSING_VALUE)
+                if type(numbers[i]) != int and type(numbers[i]) != bool and type(numbers[i]) != str and type(numbers[i]) != Nil:
+                    sys.stderr.write("Error: Wrong type\n")
+                    sys.exit(ErrorNum.TYPE_ERROR)
             elif var.type == "int" or var.type == "bool" or var.type == "string" or var.type == "nil":
                 numbers[i] = var.value
             else:
@@ -703,7 +716,6 @@ class Stri2Int(Instruction):
             sys.stderr.write("Error: Wrong value\n")
             sys.exit(ErrorNum.STRING_ERROR)
         self.set_var(frame, name, ord(string[index]))
-        
 
 
 class Read(Instruction):
@@ -792,7 +804,6 @@ class Write(Instruction):
             print("", end="")
         else:
             print(value, end="")
-        
 
 
 class Concat(Instruction):
@@ -842,9 +853,9 @@ class Strlen(Instruction):
         frame, name = self.arguments[0].value.split('@', 1)
         self.check_var(frame, name)
         if self.arguments[1].type == "var":
-            frame, name = self.arguments[1].value.split('@', 1)
-            self.check_var(frame, name)
-            var = self.get_var(frame, name)
+            frame2, name2 = self.arguments[1].value.split('@', 1)
+            self.check_var(frame2, name2)
+            var = self.get_var(frame2, name2)
             if var is None:
                 sys.stderr.write("Error: Variable not set\n")
                 sys.exit(ErrorNum.MISSING_VALUE)
@@ -857,7 +868,6 @@ class Strlen(Instruction):
             sys.stderr.write("Error: Wrong type\n")
             sys.exit(ErrorNum.TYPE_ERROR)
         self.set_var(frame, name, len(var))
-
 
 
 class GetChar(Instruction):
@@ -976,8 +986,8 @@ class SetChar(Instruction):
         if index > len(string) - 1 or index < 0 or len(char) == 0:
             sys.stderr.write("Error: Wrong value\n")
             sys.exit(ErrorNum.STRING_ERROR)
-        self.set_var(frame, name, string[:index] + char[0] + string[index + 1:])
-        
+        self.set_var(frame, name, string[:index] +
+                     char[0] + string[index + 1:])
 
 
 class Type(Instruction):

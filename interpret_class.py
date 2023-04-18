@@ -3,6 +3,7 @@ from stack import Stack
 from frame import Frame
 from error import ErrorNum
 
+
 class Interpret:
     def __init__(self, input_file):
         self.labels = {}
@@ -12,12 +13,12 @@ class Interpret:
         self.tmp_frame = None
         self.global_frame = Frame()
         self.local_frames = Stack()
-        
+
         try:
             input_file = open(input_file, 'r')
             self.input_data = input_file.read().splitlines()
             input_file.close()
-        
+
         except FileNotFoundError:
             sys.stderr.write("Error: File not found\n")
             sys.exit(ErrorNum.INPUT_FILE_ERR)

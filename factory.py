@@ -2,9 +2,10 @@ import sys
 from instructions import *
 from error import ErrorNum
 
+
 class Factory:
     @classmethod
-    def get_instruction(cls,string: str, interpret):
+    def get_instruction(cls, string: str, interpret):
         match string.upper():
             case 'MOVE':
                 return Move(interpret)
@@ -79,4 +80,3 @@ class Factory:
             case _:
                 sys.stderr.write("Error: Unknown instruction\n")
                 sys.exit(ErrorNum.WRONG_XML_STRUCTURE)
-

@@ -12,7 +12,7 @@ if __name__ == '__main__':
     input_file = arg.get_input()
     help = arg.get_help()
     if help is True:
-        if source is not None or input is not None:
+        if source is not None or input_file is not None:
             sys.stderr.write("Error: Wrong arguments\n")
             sys.exit(ErrorNum.WRONG_PARAM)
         print("TODO: help")
@@ -22,8 +22,8 @@ if __name__ == '__main__':
         sys.exit(ErrorNum.WRONG_PARAM)
     xml_in = XMLValidator(source)
     xml_in.validate()
-    interpret=Interpret(input_file)
-    for i,child in enumerate(xml_in.root):
+    interpret = Interpret(input_file)
+    for i, child in enumerate(xml_in.root):
         if child.get('opcode') == 'LABEL':
             if child[0].text in interpret.labels:
                 sys.stderr.write("Error: Label already defined\n")
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     instruction = None
     factory = Factory()
     for child in xml_in.root:
-        instruction=factory.get_instruction(child.get('opcode'),interpret)
+        instruction = factory.get_instruction(child.get('opcode'), interpret)
         for arg in child:
             instruction.set_arg(arg)
     if instruction is not None:
