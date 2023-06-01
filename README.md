@@ -1,6 +1,6 @@
 Implementační dokumentace k 2. úloze do IPP 2022/2023  
-Jméno a příjmení: Jakub Kontrík  
-Login: xkontr02  
+
+Implementácia sady skriptov pro interpretáciu neštrukturovaného imperatívneho jazyka IPPcode23.
 
 ## Implementácia
 Skript sa skladá z 9 modulov:
